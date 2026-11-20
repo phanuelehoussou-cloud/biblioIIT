@@ -1,10 +1,12 @@
 from dataclasses import dataclass
+from datetime import date
 
 @dataclass
 class Adherent:
     id_adherent: int
     nom: str
     prenom: str
-    date_naiss: str
+    date_naissance: date
     sexe: str
-    actif:bool
+    date_inscription: date
+    actif: bool = True

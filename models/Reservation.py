@@ -1,12 +1,10 @@
 from dataclasses import dataclass
+from datetime import date
 
 @dataclass
 class Reservation:
     id_reservation: int
-    livre_reserver:str
-    date_reservation: str
-    date_retrait: str
-    date_depot: str
-    temps_utilsation:str
-    adherent_nom:str
-    
+    livre_id: int
+    adherent_id: int
+    date_reservation: date
+    statut: str = "en_attente"

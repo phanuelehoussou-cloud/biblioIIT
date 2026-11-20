@@ -1,10 +1,12 @@
 from dataclasses import dataclass
+from datetime import date
+from typing import Optional
 
 @dataclass
 class Emprunt:
     id_emprunt: int
-    livre_conserne: str
-    adherent_nom:str
-    date_retrait: str
-    date_depot: str
-    temps_utilsation:str
+    exemplaire_id: int
+    adherent_id: int
+    date_emprunt: date
+    date_retour_prevue: date
+    date_retour_reelle: Optional[date] = None

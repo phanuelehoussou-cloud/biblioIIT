@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2 class="mb-3">Emprunts en cours</h2>
+
+<table class="table table-striped align-middle">
+    <thead><tr><th>N°</th><th>Exemplaire</th><th>Livre</th><th>Adhérent</th><th>Emprunté le</th><th>Retour prévu</th><th>Statut</th><th></th></tr></thead>
+    <tbody>
+        {% for e in emprunts %}
+        <tr>
+        <td>{{ e.id_emprunt }}</td><td>{{ e.exemplaire_id }}</td><td>{{ e.titre }}</td>
+        <td>{{ e.adherent }}</td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td>
+        <td><span class="badge text-bg-{{ 'danger' if e.en_retard else 'success' }}">{{ 'En retard' if e.en_retard else 'OK' }}</span></td>
+        <td>
+            <form method="post" action="{{ url_for('retourner') }}">
+            <input type="hidden" name="exemplaire_id" value="{{ e.exemplaire_id }}">
+            <button class="btn btn-sm btn-outline-primary">Retourner</button>
+            </form>
+        </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="text-center text-muted">Aucun emprunt en cours</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="card mt-4"><div class="card-body">
+    <h5 class="card-title">Nouvel emprunt</h5>
+    <form class="row g-2" method="post" action="{{ url_for('emprunter') }}">
+        <div class="col-md-5"><input class="form-control" name="adherent_id" placeholder="N° de l'adhérent" required></div>
+        <div class="col-md-5"><input class="form-control" name="livre_id" placeholder="N° du livre" required></div>
+        <div class="col-md-2"><button class="btn btn-success w-100">Emprunter</button></div>
+    </form>
+</div></div>
+{% endblock %}

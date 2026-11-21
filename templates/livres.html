@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2 class="mb-3">Catalogue</h2>
+
+<form class="row g-2 mb-3" method="get" action="{{ url_for('livres') }}">
+    <div class="col"><input class="form-control" name="q" value="{{ q }}" placeholder="Titre ou auteur"></div>
+    <div class="col-auto"><button class="btn btn-primary">Rechercher</button></div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead><tr><th>ID</th><th>Titre</th><th>Auteur</th><th>Catégorie</th><th>Année</th><th>Disponibles</th></tr></thead>
+    <tbody>
+        {% for l in livres %}
+        <tr>
+        <td>{{ l.id }}</td><td>{{ l.titre }}</td><td>{{ l.auteur }}</td>
+        <td>{{ l.categorie }}</td><td>{{ l.annee }}</td>
+        <td><span class="badge text-bg-{{ 'success' if l.dispo > 0 else 'danger' }}">{{ l.dispo }}/{{ l.total }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-muted">Aucun livre</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="card mt-4"><div class="card-body">
+    <h5 class="card-title">Ajouter un livre</h5>
+    <form class="row g-2" method="post" action="{{ url_for('ajouter_livre') }}">
+        <div class="col-md-4"><input class="form-control" name="titre" placeholder="Titre" required></div>
+        <div class="col-md-3"><input class="form-control" name="auteur" placeholder="Auteur" required></div>
+        <div class="col-md-2"><input class="form-control" name="categorie" placeholder="Catégorie"></div>
+        <div class="col-md-1"><input class="form-control" name="annee" placeholder="Année" required></div>
+        <div class="col-md-1"><input class="form-control" name="nb_exemplaires" value="1" required></div>
+        <div class="col-md-1"><button class="btn btn-success w-100">+</button></div>
+    </form>
+</div></div>
+    {% endblock %}

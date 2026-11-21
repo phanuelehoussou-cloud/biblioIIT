@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2 class="mb-3">Réservations</h2>
+
+<form class="row g-2 mb-3" method="get" action="{{ url_for('reservations') }}">
+    <div class="col"><input class="form-control" name="adherent_id" value="{{ adherent_id }}" placeholder="N° de l'adhérent"></div>
+    <div class="col-auto"><button class="btn btn-primary">Voir ses réservations</button></div>
+</form>
+
+{% if reservations is not none %}
+<table class="table table-striped align-middle">
+    <thead><tr><th>N°</th><th>Livre</th><th>Date</th><th>Statut</th><th></th></tr></thead>
+    <tbody>
+        {% for r in reservations %}
+        <tr>
+        <td>{{ r.id }}</td><td>{{ r.titre }}</td><td>{{ r.date }}</td><td>{{ r.statut }}</td>
+        <td>
+            {% if r.statut == 'en_attente' %}
+            <form method="post" action="{{ url_for('annuler_reservation', reservation_id=r.id) }}">
+            <input type="hidden" name="adherent_id" value="{{ adherent_id }}">
+            <button class="btn btn-sm btn-outline-danger">Annuler</button>
+            </form>
+            {% endif %}
+        </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-muted">Aucune réservation</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<div class="card mt-4"><div class="card-body">
+    <h5 class="card-title">Nouvelle réservation</h5>
+    <form class="row g-2" method="post" action="{{ url_for('reserver') }}">
+        <div class="col-md-5"><input class="form-control" name="adherent_id" value="{{ adherent_id }}" placeholder="N° de l'adhérent" required></div>
+        <div class="col-md-5"><input class="form-control" name="livre_id" placeholder="N° du livre" required></div>
+        <div class="col-md-2"><button class="btn btn-success w-100">Réserver</button></div>
+    </form>
+</div></div>
+{% endblock %}

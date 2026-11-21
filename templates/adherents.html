@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2 class="mb-3">Adhérents</h2>
+
+<table class="table table-striped align-middle">
+    <thead><tr><th>ID</th><th>Nom</th><th>Prénom</th><th>Naissance</th><th>Sexe</th><th>Statut</th><th></th></tr></thead>
+    <tbody>
+        {% for a in adherents %}
+        <tr>
+        <td>{{ a.id_adherent }}</td><td>{{ a.nom }}</td><td>{{ a.prenom }}</td>
+        <td>{{ a.date_naissance }}</td><td>{{ a.sexe }}</td>
+        <td><span class="badge text-bg-{{ 'success' if a.actif else 'secondary' }}">{{ 'Actif' if a.actif else 'Inactif' }}</span></td>
+        <td>
+            <form method="post" action="{{ url_for('statut_adherent', adherent_id=a.id_adherent) }}">
+            <input type="hidden" name="actif" value="{{ 0 if a.actif else 1 }}">
+            <button class="btn btn-sm btn-outline-secondary">{{ 'Désactiver' if a.actif else 'Activer' }}</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="card mt-4"><div class="card-body">
+    <h5 class="card-title">Inscrire un adhérent</h5>
+    <form class="row g-2" method="post" action="{{ url_for('inscrire_adherent') }}">
+        <div class="col-md-3"><input class="form-control" name="nom" placeholder="Nom" required></div>
+        <div class="col-md-3"><input class="form-control" name="prenom" placeholder="Prénom" required></div>
+        <div class="col-md-3"><input class="form-control" type="date" name="date_naissance" required></div>
+        <div class="col-md-2">
+        <select class="form-select" name="sexe"><option value="M">M</option><option value="F">F</option></select>
+        </div>
+        <div class="col-md-1"><button class="btn btn-success w-100">+</button></div>
+    </form>
+</div></div>
+{% endblock %}

@@ -24,7 +24,7 @@ class EmpruntDAO:
                 "INSERT INTO emprunt (exemplaire_id, adherent_id, date_emprunt, "
                 "date_retour_prevue) VALUES (?, ?, ?, ?)",
                 (e.exemplaire_id, e.adherent_id,
-                 e.date_emprunt.isoformat(), e.date_retour_prevue.isoformat()),
+                    e.date_emprunt.isoformat(), e.date_retour_prevue.isoformat()),
             )
             return cur.lastrowid
 

@@ -4,6 +4,7 @@ from models.Emprunt import Emprunt
 from database.adherent_dao import AdherentDAO
 from database.emprunt_dao import EmpruntDAO
 from database.exemplaire_dao import ExemplaireDAO
+from database.livre_dao import LivreDAO
 
 
 class EmpruntService:
@@ -14,6 +15,7 @@ class EmpruntService:
         self.adherent_dao = AdherentDAO()
         self.emprunt_dao = EmpruntDAO()
         self.exemplaire_dao = ExemplaireDAO()
+        self.livre_dao = LivreDAO()
 
     def emprunter(self, adherent_id, livre_id):
         adherent = self.adherent_dao.obtenir(adherent_id)
@@ -21,6 +23,8 @@ class EmpruntService:
             raise ValueError("Adhérent introuvable")
         if not adherent.actif:
             raise ValueError("Adhérent inactif")
+        if self.livre_dao.obtenir(livre_id) is None:
+            raise ValueError("Livre introuvable")
         if self.emprunt_dao.compter_en_cours(adherent_id) >= self.LIMITE_EMPRUNTS:
             raise ValueError("Limite d'emprunts atteinte")
 
@@ -32,7 +36,7 @@ class EmpruntService:
         date_retour_prevue = date_emprunt + timedelta(days=self.DUREE_JOURS)
 
         emprunt = Emprunt(0, exemplaire.id_exemplaire, adherent_id,
-                        date_emprunt, date_retour_prevue)
+                            date_emprunt, date_retour_prevue)
         emprunt.id_emprunt = self.emprunt_dao.ajouter(emprunt)
 
         self.exemplaire_dao.changer_disponibilite(exemplaire.id_exemplaire, False)
@@ -46,3 +50,20 @@ class EmpruntService:
         self.emprunt_dao.enregistrer_retour(emprunt.id_emprunt, date.today())
         self.exemplaire_dao.changer_disponibilite(exemplaire_id, True)
         return emprunt
+
+    def lister_en_cours(self):
+        resultat = []
+        for e in self.emprunt_dao.lister_en_cours():
+            exemplaire = self.exemplaire_dao.obtenir(e.exemplaire_id)
+            livre = self.livre_dao.obtenir(exemplaire.livre_id)
+            adherent = self.adherent_dao.obtenir(e.adherent_id)
+            resultat.append({
+                "id_emprunt": e.id_emprunt,
+                "exemplaire_id": e.exemplaire_id,
+                "titre": livre.titre,
+                "adherent": f"{adherent.prenom} {adherent.nom}",
+                "date_emprunt": e.date_emprunt,
+                "date_retour_prevue": e.date_retour_prevue,
+                "en_retard": date.today() > e.date_retour_prevue,
+            })
+        return resultat
